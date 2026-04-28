@@ -15,8 +15,8 @@ public interface EnvoiRepository extends JpaRepository<Envoi, String> {
             @Param("fin") LocalDateTime fin
     );
 
-    @Query(value = "SELECT SUM(fe.frais_env) FROM ENVOI e " +
-            "JOIN FRAIS_ENVOI fe ON e.montant >= fe.montant1 AND e.montant <= fe.montant2",
+    @Query(value = "SELECT SUM(fe.frais_env) FROM envoi e " +
+            "JOIN frais_envoi fe ON e.montant >= fe.montant1 AND e.montant <= fe.montant2",
             nativeQuery = true)
     Integer totalRecetteEnvoi();
 
@@ -25,4 +25,9 @@ public interface EnvoiRepository extends JpaRepository<Envoi, String> {
     List<Envoi> findByNumTelAndMonth(@Param("numTel") String numTel,
                                      @Param("mois") int mois,
                                      @Param("annee") int annee);
+
+    @Query("SELECT e FROM Envoi e WHERE e.numEnvoyeur = :num AND MONTH(e.date) = :mois AND YEAR(e.date) = :annee")
+    List<Envoi> findByClientAndMonth(String num, int mois, int annee);
+
+    List<Envoi> findByDate(LocalDateTime date);
 }

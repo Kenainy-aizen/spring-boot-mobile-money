@@ -1,9 +1,6 @@
 package mg.edu.eni.mobilemoney.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +13,6 @@ import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
-
 public class Retrait {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,4 +20,5 @@ public class Retrait {
     private String numtel;
     private Integer montant;
     private LocalDateTime daterecep;
+    private String raison;
 }

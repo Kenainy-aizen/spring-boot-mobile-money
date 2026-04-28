@@ -19,8 +19,7 @@ public class Frais_recepService implements IFrais_recepService {
 
     @Override
     public Frais_recep addFraisRecep(Frais_recep request) {
-        String nextId = "FR" + (fraisRecepRepository.count()+1);
-        request.setIdRec(nextId);
+        request.setIdRec(generateNextId());
         return fraisRecepRepository.save(request);
     }
 
@@ -57,6 +56,17 @@ public class Frais_recepService implements IFrais_recepService {
         return fraisRecepRepository.findById(idRec)
                 .orElseThrow(() -> new FraisRecepNotFoundException("Frais de reception non trouve")
                 );
+    }
+
+    @Override
+    public String generateNextId() {
+        return fraisRecepRepository.findFirstByOrderByIdRecDesc()
+                .map(dernier -> {
+                    String idStr = dernier.getIdRec();
+                    int numero = Integer.parseInt(idStr.substring(2));
+                    return "FR" + (numero + 1);
+                })
+                .orElse("FR1");
     }
 
 

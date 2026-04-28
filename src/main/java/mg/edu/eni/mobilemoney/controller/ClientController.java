@@ -2,17 +2,22 @@ package mg.edu.eni.mobilemoney.controller;
 
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.RequiredArgsConstructor;
+import mg.edu.eni.mobilemoney.DTO.ClientReportDTO;
+import mg.edu.eni.mobilemoney.DTO.TransactionDateDTO;
 import mg.edu.eni.mobilemoney.exceptions.ClientNotFoundException;
 import mg.edu.eni.mobilemoney.exceptions.NumtelExistException;
 import mg.edu.eni.mobilemoney.model.Client;
 import mg.edu.eni.mobilemoney.request.AddClientRequest;
 import mg.edu.eni.mobilemoney.request.ClientUpdateRequest;
 import mg.edu.eni.mobilemoney.response.ApiResponse;
+import mg.edu.eni.mobilemoney.service.StatistiqueService;
 import mg.edu.eni.mobilemoney.service.client.ClientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -22,6 +27,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 public class ClientController {
     private final ClientService clientService;
+    private final StatistiqueService statistiqueService;
 
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllClients() {
@@ -73,7 +79,7 @@ public class ClientController {
         try {
             Client theClient = clientService.updateClientById(client, numTel);
             return ResponseEntity.ok(new ApiResponse("Update success", theClient));
-        } catch (ClientNotFoundException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
     }
@@ -89,5 +95,25 @@ public class ClientController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Client>> searchClients(@RequestParam("query") String query) {
+        List<Client> resultats = clientService.rechercherClients(query);
+        return ResponseEntity.ok(resultats);
+    }
+
+    @GetMapping("/reports/{contact}")
+    public ResponseEntity<ClientReportDTO> getMonthlyReport(
+            @PathVariable String contact,
+            @RequestParam int month,
+            @RequestParam int year) {
+        ClientReportDTO report = statistiqueService.genererRapportMensuel(contact, month, year);
+        return ResponseEntity.ok(report);
+    }
+
+    @GetMapping("/global")
+    public ResponseEntity<List<TransactionDateDTO>> getGlobalHistory(
+            @RequestParam("date") LocalDate depuis) {
+        return ResponseEntity.ok(statistiqueService.getHistoriqueGlobal(depuis));
+    }
 
 }

@@ -62,9 +62,10 @@ public class RetraitService implements IRetraitService{
     }
 
     private Retrait updateExistingRetrait(Retrait request, Retrait existingRetrait){
-        existingRetrait.setDaterecep(request.getDaterecep());
+        existingRetrait.setDaterecep(LocalDateTime.now());
         existingRetrait.setMontant(request.getMontant());
         existingRetrait.setNumtel(request.getNumtel());
+        existingRetrait.setRaison(request.getRaison());
 
         return existingRetrait;
     }

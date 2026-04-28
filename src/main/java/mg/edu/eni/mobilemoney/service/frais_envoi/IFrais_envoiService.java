@@ -10,5 +10,6 @@ public interface IFrais_envoiService {
     Frais_envoi updateFraisEnvoiById(Frais_envoi fraisEnvoi, String idEnv);
     Frais_envoi getFraisEnvoiById(String idEnv);
     List<Frais_envoi> getAllFraisEnvoi();
+    String generateNextId();
 }
 

@@ -19,8 +19,7 @@ public class Frais_envoiService implements IFrais_envoiService{
 
     @Override
     public Frais_envoi addFraisEnvoi(Frais_envoi request) {
-        String nextId = "FV"+(fraisEnvoiRepository.count()+1);
-        request.setIdEnv(nextId);
+        request.setIdEnv(generateNextId());
         return fraisEnvoiRepository.save(request);
     }
 
@@ -56,5 +55,16 @@ public class Frais_envoiService implements IFrais_envoiService{
     @Override
     public List<Frais_envoi> getAllFraisEnvoi() {
         return fraisEnvoiRepository.findAll();
+    }
+
+    @Override
+    public String generateNextId() {
+        return fraisEnvoiRepository.findFirstByOrderByIdEnvDesc()
+                .map(dernier -> {
+                    String idStr = dernier.getIdEnv();
+                    int numero = Integer.parseInt(idStr.substring(2));
+                    return "FV" + (numero + 1);
+                })
+                .orElse("FV1");
     }
 }

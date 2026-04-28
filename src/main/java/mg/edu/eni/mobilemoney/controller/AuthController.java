@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> login(@RequestBody User user) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -54,10 +54,10 @@ public class AuthController {
                     ));
             User authenticatedUser = userService.searchByUsername(user.getUsername());
             String token = jwtService.genererToken(new MyUserDetails(authenticatedUser));
-            return ResponseEntity.ok(new ApiResponse("token",token));
+            return ResponseEntity.ok(Map.of("token",token));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse("Erreur", "Identifiants incorrects"));
+                    .body(Map.of("Erreur", "Identifiants incorrects"));
         }
     }
 }

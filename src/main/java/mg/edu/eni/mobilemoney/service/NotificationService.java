@@ -20,5 +20,4 @@ public class NotificationService {
         message.setText(contenu);
         mailSender.send(message);
     }
-
 }

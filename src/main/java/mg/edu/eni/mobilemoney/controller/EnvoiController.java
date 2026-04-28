@@ -9,7 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -66,5 +69,10 @@ public class EnvoiController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Envoi>> searchEnvoi(@RequestParam("date") LocalDate date) {
+        List<Envoi> resultat = envoiService.searchByDate(date);
+        return ResponseEntity.ok(resultat);
+    }
 
 }

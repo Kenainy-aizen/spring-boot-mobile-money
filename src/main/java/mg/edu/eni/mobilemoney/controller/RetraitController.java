@@ -2,14 +2,17 @@ package mg.edu.eni.mobilemoney.controller;
 
 import lombok.RequiredArgsConstructor;
 import mg.edu.eni.mobilemoney.exceptions.RetraitNotFoundException;
+import mg.edu.eni.mobilemoney.model.Envoi;
 import mg.edu.eni.mobilemoney.model.Retrait;
 import mg.edu.eni.mobilemoney.response.ApiResponse;
+import mg.edu.eni.mobilemoney.service.StatistiqueService;
 import mg.edu.eni.mobilemoney.service.retrait.RetraitService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.print.attribute.standard.PDLOverrideSupported;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -21,6 +24,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 public class RetraitController {
     private final RetraitService retraitService;
+    private final StatistiqueService statistiqueService;
 
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllRetrait() {
@@ -42,7 +46,7 @@ public class RetraitController {
         }
     }
 
-    @PutMapping("/retrait/{idRecep}/retrait")
+    @PutMapping("/retrait/{idRecep}/update")
     public ResponseEntity<ApiResponse> updateRetrait(@RequestBody Retrait retrait, @PathVariable String idRecep) {
         try {
             Retrait theRetrait = retraitService.updateRetrait(retrait, idRecep);
@@ -66,6 +70,17 @@ public class RetraitController {
     public ResponseEntity<ApiResponse> addRetrait(@RequestBody Retrait retrait){
         Retrait theRetrait = retraitService.addRetrait(retrait);
         return ResponseEntity.ok(new ApiResponse("success",theRetrait));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Retrait>> searchEnvoi(@RequestParam("date") LocalDate date) {
+        List<Retrait> resultat = retraitService.searchByDate(date);
+        return ResponseEntity.ok(resultat);
+    }
+
+    @GetMapping("/recette")
+    public ResponseEntity<Integer> recette(){
+        return ResponseEntity.ok(statistiqueService.calculerRecetteTotale());
     }
 
 }

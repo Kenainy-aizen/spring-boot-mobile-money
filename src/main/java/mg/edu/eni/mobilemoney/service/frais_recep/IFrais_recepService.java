@@ -10,4 +10,5 @@ public interface IFrais_recepService {
     void deleteFraisRecep(String idRec);
     List<Frais_recep> getAllFraisRecep();
     Frais_recep getFraisRecepById(String idRec);
+    String generateNextId();
 }

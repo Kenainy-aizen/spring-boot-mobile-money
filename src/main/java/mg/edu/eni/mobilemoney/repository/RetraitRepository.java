@@ -16,8 +16,8 @@ public interface RetraitRepository extends JpaRepository<Retrait, String> {
             @Param("fin") LocalDateTime fin
     );
 
-    @Query(value = "SELECT SUM(fr.frais_rec) FROM Retrait r " +
-            "JOIN Frais_recep fr ON r.montant >= fr.montant1 AND r.montant <= fr.montant2",
+    @Query(value = "SELECT SUM(fr.frais_rec) FROM retrait r " + // 'retrait' en minuscules ici
+            "JOIN frais_recep fr ON r.montant >= fr.montant1 AND r.montant <= fr.montant2",
             nativeQuery = true)
     Integer totalRecetteRetrait();
 
@@ -27,5 +27,9 @@ public interface RetraitRepository extends JpaRepository<Retrait, String> {
                                        @Param("mois") int mois,
                                        @Param("annee") int annee);
 
+    @Query("SELECT r FROM Retrait r WHERE r.numtel = :num AND MONTH(r.daterecep) = :mois AND YEAR(r.daterecep) = :annee")
+    List<Retrait> findByClientAndMonth(String num, int mois, int annee);
+
+    List<Retrait> findByDaterecep(LocalDateTime date);
 
 }
